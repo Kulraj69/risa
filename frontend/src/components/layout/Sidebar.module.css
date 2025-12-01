@@ -1,0 +1,58 @@
+.sidebar {
+    width: 250px;
+    height: 100vh;
+    background-color: var(--bg-sidebar);
+    border-right: 1px solid var(--border-subtle);
+    display: flex;
+    flex-direction: column;
+    padding: 24px 16px;
+    position: fixed;
+    left: 0;
+    top: 0;
+    z-index: 50;
+}
+
+.logo {
+    font-size: 18px;
+    font-weight: 700;
+    color: var(--text-primary);
+    margin-bottom: 32px;
+    padding-left: 12px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.nav {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+}
+
+.navItem {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 10px 12px;
+    border-radius: var(--radius-md);
+    color: var(--text-secondary);
+    font-size: 14px;
+    font-weight: 500;
+    transition: all var(--transition-fast);
+    cursor: pointer;
+}
+
+.navItem:hover {
+    background-color: var(--bg-hover);
+    color: var(--text-primary);
+}
+
+.active {
+    background-color: var(--bg-surface);
+    color: var(--accent-primary);
+    box-shadow: var(--shadow-sm);
+}
+
+.active svg {
+    stroke: var(--accent-primary);
+}

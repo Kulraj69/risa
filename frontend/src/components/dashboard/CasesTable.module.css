@@ -1,0 +1,99 @@
+.tableContainer {
+    background: var(--bg-surface);
+    border-radius: var(--radius-lg);
+    border: 1px solid var(--border-subtle);
+    box-shadow: var(--shadow-sm);
+    overflow: hidden;
+}
+
+.table {
+    width: 100%;
+    border-collapse: collapse;
+    text-align: left;
+}
+
+.th {
+    padding: 16px 24px;
+    font-size: 12px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    color: var(--text-secondary);
+    border-bottom: 1px solid var(--border-subtle);
+    background-color: var(--bg-app);
+}
+
+.tr {
+    border-bottom: 1px solid var(--border-subtle);
+    transition: background-color var(--transition-fast);
+}
+
+.tr:last-child {
+    border-bottom: none;
+}
+
+.tr:hover {
+    background-color: var(--bg-hover);
+}
+
+.td {
+    padding: 16px 24px;
+    font-size: 14px;
+    color: var(--text-primary);
+}
+
+.patientName {
+    font-weight: 500;
+}
+
+.secondaryText {
+    color: var(--text-secondary);
+    font-size: 13px;
+}
+
+.statusChip {
+    display: inline-flex;
+    align-items: center;
+    padding: 4px 10px;
+    border-radius: 20px;
+    font-size: 12px;
+    font-weight: 500;
+}
+
+.statusPending {
+    background: var(--status-pending-bg);
+    color: var(--status-pending-text);
+}
+
+.statusApproved {
+    background: var(--status-success-bg);
+    color: var(--status-success-text);
+}
+
+.statusDenied {
+    background: var(--status-error-bg);
+    color: var(--status-error-text);
+}
+
+.statusMissing {
+    background: var(--status-neutral-bg);
+    color: var(--status-neutral-text);
+}
+
+.actionBtn {
+    background: transparent;
+    border: 1px solid var(--border-default);
+    color: var(--text-secondary);
+    padding: 6px 12px;
+    border-radius: var(--radius-md);
+    font-size: 12px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all var(--transition-fast);
+}
+
+.actionBtn:hover {
+    border-color: var(--accent-primary);
+    color: var(--accent-primary);
+    background-color: var(--accent-surface);
+}
