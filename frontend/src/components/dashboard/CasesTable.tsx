@@ -1,30 +1,24 @@
 import React from 'react';
 import styles from './CasesTable.module.css';
 
-interface Case {
+export interface Case {
     id: string;
     patientName: string;
     diagnosis: string;
     stage: string;
     treatmentCode: string;
     payer: string;
-    status: 'Pending' | 'Approved' | 'Denied' | 'Missing Docs';
+    status: string;
     timeWaiting: string;
+    clinicalNote?: string;
 }
-
-const dummyData: Case[] = [
-    { id: '1', patientName: 'Eleanor Rigby', diagnosis: 'NSCLC', stage: 'Stage III', treatmentCode: 'J9035 (Bevacizumab)', payer: 'BlueCross', status: 'Pending', timeWaiting: '2 days' },
-    { id: '2', patientName: 'Jude Law', diagnosis: 'Melanoma', stage: 'Stage II', treatmentCode: 'J9271 (Pembrolizumab)', payer: 'UnitedHealth', status: 'Missing Docs', timeWaiting: '4 hours' },
-    { id: '3', patientName: 'Penny Lane', diagnosis: 'Breast Cancer', stage: 'Stage IV', treatmentCode: 'J9355 (Trastuzumab)', payer: 'Aetna', status: 'Approved', timeWaiting: '-' },
-    { id: '4', patientName: 'Desmond Jones', diagnosis: 'Colorectal', stage: 'Stage III', treatmentCode: 'J9041 (Bortezomib)', payer: 'Cigna', status: 'Denied', timeWaiting: '1 day' },
-    { id: '5', patientName: 'Rita Meter', diagnosis: 'Lung Cancer', stage: 'Stage I', treatmentCode: 'J9299 (Nivolumab)', payer: 'Medicare', status: 'Pending', timeWaiting: '5 hours' },
-];
 
 interface CasesTableProps {
-    onViewCase: (caseId: string) => void;
+    data: Case[];
+    onViewCase: (caseItem: Case) => void;
 }
 
-const CasesTable = ({ onViewCase }: CasesTableProps) => {
+const CasesTable = ({ data, onViewCase }: CasesTableProps) => {
     const getStatusClass = (status: string) => {
         switch (status) {
             case 'Pending': return styles.statusPending;
@@ -50,7 +44,7 @@ const CasesTable = ({ onViewCase }: CasesTableProps) => {
                     </tr>
                 </thead>
                 <tbody>
-                    {dummyData.map((row) => (
+                    {data.map((row) => (
                         <tr key={row.id} className={styles.tr}>
                             <td className={styles.td}>
                                 <div className={styles.patientName}>{row.patientName}</div>
@@ -72,7 +66,7 @@ const CasesTable = ({ onViewCase }: CasesTableProps) => {
                             <td className={styles.td}>
                                 <button
                                     className={styles.actionBtn}
-                                    onClick={() => onViewCase(row.id)}
+                                    onClick={() => onViewCase(row)}
                                 >
                                     View Workflow
                                 </button>
