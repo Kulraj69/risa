@@ -38,6 +38,9 @@ const Sidebar = () => {
                     </div>
                 ))}
             </nav>
+            <div style={{ marginTop: 'auto', padding: '0 12px', fontSize: '12px', color: 'var(--text-tertiary)' }}>
+                v0.2.0
+            </div>
         </aside>
     );
 };
