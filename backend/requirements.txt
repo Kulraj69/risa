@@ -1,0 +1,9 @@
+fastapi
+uvicorn
+pydantic
+python-dotenv
+openai
+langchain
+langchain-openai
+langgraph
+mangum

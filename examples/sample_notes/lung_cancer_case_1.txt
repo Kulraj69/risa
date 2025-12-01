@@ -1,0 +1,7 @@
+Patient: John Doe
+DOB: 01/01/1960
+Diagnosis: Non-small cell lung cancer (NSCLC), Adenocarcinoma
+Stage: IV (metastasis to brain)
+Current Status: Progression after first-line chemotherapy.
+Plan: Switch to Pemetrexed (J9305) or similar.
+ECOG PS: 1
