@@ -77,6 +77,10 @@ export default function Home() {
     setTimeout(() => setSelectedCase(null), 300); // Wait for animation
   };
 
+  const handleNewCase = () => {
+    alert('New Case feature coming soon! This would open a form to create a new prior authorization case.');
+  };
+
   return (
     <DashboardLayout>
       <div className="flex justify-between items-center mb-6">
@@ -84,7 +88,7 @@ export default function Home() {
           <h1 className="text-h1">Cases Overview</h1>
           <p className="text-body">Manage and track prior authorization requests.</p>
         </div>
-        <button className="btn btn-primary">
+        <button className="btn btn-primary" onClick={handleNewCase}>
           + New Case
         </button>
       </div>

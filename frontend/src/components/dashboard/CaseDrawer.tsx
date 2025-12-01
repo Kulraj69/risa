@@ -27,6 +27,8 @@ const CaseDrawer = ({ isOpen, onClose, caseData }: CaseDrawerProps) => {
     const [letter, setLetter] = useState<string | null>(null);
     const [loading, setLoading] = useState<string | null>(null);
     const [authStatus, setAuthStatus] = useState<any>(null);
+    const [error, setError] = useState<string | null>(null);
+    const [submitted, setSubmitted] = useState(false);
 
     useEffect(() => {
         if (isOpen && caseData) {
@@ -34,6 +36,8 @@ const CaseDrawer = ({ isOpen, onClose, caseData }: CaseDrawerProps) => {
             setChecklist([]);
             setLetter(null);
             setAuthStatus(null);
+            setError(null);
+            setSubmitted(false);
 
             // Auto-check auth status
             checkAuthStatus();
@@ -43,6 +47,7 @@ const CaseDrawer = ({ isOpen, onClose, caseData }: CaseDrawerProps) => {
     const checkAuthStatus = async () => {
         if (!caseData) return;
         setLoading('auth');
+        setError(null);
         try {
             const res = await fetch(`${API_URL}/check_auth_need`, {
                 method: 'POST',
@@ -55,6 +60,11 @@ const CaseDrawer = ({ isOpen, onClose, caseData }: CaseDrawerProps) => {
                     clinical_note: caseData.clinicalNote || "Standard clinical note"
                 })
             });
+
+            if (!res.ok) {
+                throw new Error('Backend service unavailable');
+            }
+
             const data = await res.json();
             setAuthStatus(data);
 
@@ -64,6 +74,19 @@ const CaseDrawer = ({ isOpen, onClose, caseData }: CaseDrawerProps) => {
             }
         } catch (e) {
             console.error("Error checking auth:", e);
+            setError('Unable to connect to backend. Using demo mode.');
+            // Fallback demo data
+            setAuthStatus({
+                auth_needed: true,
+                reason: 'Prior authorization required by payer policy (Demo Mode)',
+                rule_id: 'DEMO-001'
+            });
+            setChecklist([
+                { id: 0, text: 'Patient Consent Form', completed: true, mandatory: true },
+                { id: 1, text: 'Pathology Report (Confirmed Diagnosis)', completed: true, mandatory: true },
+                { id: 2, text: 'Previous Therapy History', completed: false, mandatory: true },
+                { id: 3, text: 'Genetic Testing Results (BRAF/EGFR)', completed: false, mandatory: false },
+            ]);
         }
         setLoading(null);
     };
@@ -82,6 +105,9 @@ const CaseDrawer = ({ isOpen, onClose, caseData }: CaseDrawerProps) => {
                     clinical_note: caseData.clinicalNote || "Standard clinical note"
                 })
             });
+
+            if (!res.ok) throw new Error('Backend error');
+
             const data = await res.json();
             setChecklist(data.checklist.map((item: any, idx: number) => ({
                 id: idx,
@@ -114,12 +140,26 @@ const CaseDrawer = ({ isOpen, onClose, caseData }: CaseDrawerProps) => {
                     ]
                 })
             });
+
+            if (!res.ok) {
+                throw new Error('Backend error');
+            }
+
             const data = await res.json();
             setLetter(data.letter_content);
         } catch (e) {
             console.error("Error generating letter:", e);
+            // Fallback demo letter
+            setLetter(`[DEMO MODE - Letter Draft]\n\nDear ${caseData.payer} Medical Review Team,\n\nI am writing to request prior authorization for ${caseData.treatmentCode} for my patient ${caseData.patientName}.\n\nDiagnosis: ${caseData.diagnosis}, ${caseData.stage}\n\nJustification:\n- Evidence-based treatment per NCCN guidelines\n- Medical necessity supported by clinical documentation\n- Patient has failed previous lines of therapy\n\nThank you for your consideration.\n\nSincerely,\nDr. Medical Oncology`);
         }
         setLoading(null);
+    };
+
+    const handleSubmit = () => {
+        setSubmitted(true);
+        setTimeout(() => {
+            alert('Case submitted to payer successfully! (Demo)');
+        }, 500);
     };
 
     if (!isOpen || !caseData) return null;
@@ -145,6 +185,21 @@ const CaseDrawer = ({ isOpen, onClose, caseData }: CaseDrawerProps) => {
                 </div>
 
                 <div className={styles.content}>
+                    {/* Error Message */}
+                    {error && (
+                        <div style={{
+                            padding: '12px',
+                            background: 'var(--status-pending-bg)',
+                            border: '1px solid var(--status-pending-text)',
+                            borderRadius: 'var(--radius-md)',
+                            marginBottom: '16px',
+                            fontSize: '13px',
+                            color: 'var(--status-pending-text)'
+                        }}>
+                            ⚠️ {error}
+                        </div>
+                    )}
+
                     {/* Summary Card */}
                     <div className={styles.section}>
                         <div className={styles.sectionTitle}>Therapy Plan</div>
@@ -156,6 +211,7 @@ const CaseDrawer = ({ isOpen, onClose, caseData }: CaseDrawerProps) => {
                                         {authStatus.auth_needed ? 'Auth Required' : 'No Auth Needed'}
                                     </span>
                                 )}
+                                {loading === 'auth' && <span className="text-small">Loading...</span>}
                             </div>
                             <div className="text-body">
                                 {authStatus ? authStatus.reason : 'Checking authorization requirements...'}
@@ -190,6 +246,15 @@ const CaseDrawer = ({ isOpen, onClose, caseData }: CaseDrawerProps) => {
                                     <div className={styles.timelineContent}>
                                         <div className="text-body-strong">Letter Drafted</div>
                                         <div className={styles.timelineTime}>AI Agent</div>
+                                    </div>
+                                </div>
+                            )}
+                            {submitted && (
+                                <div className={styles.timelineItem}>
+                                    <div className={`${styles.timelineDot} ${styles.timelineDotActive}`}></div>
+                                    <div className={styles.timelineContent}>
+                                        <div className="text-body-strong">Submitted to Payer</div>
+                                        <div className={styles.timelineTime}>Just now</div>
                                     </div>
                                 </div>
                             )}
@@ -241,7 +306,13 @@ const CaseDrawer = ({ isOpen, onClose, caseData }: CaseDrawerProps) => {
                     >
                         {loading === 'letter' ? 'Drafting...' : 'Generate Letter'}
                     </button>
-                    <button className="btn btn-primary">Submit to Payer</button>
+                    <button
+                        className="btn btn-primary"
+                        onClick={handleSubmit}
+                        disabled={submitted}
+                    >
+                        {submitted ? '✓ Submitted' : 'Submit to Payer'}
+                    </button>
                 </div>
             </div>
         </>
